@@ -34,6 +34,7 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
   void _onNavItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      
     });
   }
 
@@ -53,9 +54,24 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(Icons.home_outlined, 'Home', _selectedIndex == 0, () => _onNavItemTapped(0)),
-          _buildNavItem(Icons.document_scanner_outlined, 'Scan', _selectedIndex == 1, () => _onNavItemTapped(1)),
-          _buildNavItem(Icons.person_outline, 'Account', _selectedIndex == 2, () => _onNavItemTapped(2)),
+          _buildNavItem(
+            _selectedIndex == 0 ? Icons.home_rounded : Icons.home_outlined, 
+            'Home', 
+            _selectedIndex == 0, 
+            () => _onNavItemTapped(0)
+          ),
+          _buildNavItem(
+            _selectedIndex == 1 ? Icons.document_scanner : Icons.document_scanner_outlined, 
+            'Scan', 
+            _selectedIndex == 1, 
+            () => _onNavItemTapped(1)
+          ),
+          _buildNavItem(
+            _selectedIndex == 2 ? Icons.person : Icons.person_outline, 
+            'Account', 
+            _selectedIndex == 2, 
+            () => _onNavItemTapped(2)
+          ),
         ],
       ),
     );
@@ -67,12 +83,21 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            color: isSelected ? Colors.white : Colors.grey,
-            size: 24,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Icon(
+              icon,
+              color: isSelected ? Colors.white : Colors.grey,
+              size: 24,
+            ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             label,
             style: TextStyle(
@@ -217,7 +242,7 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
                             width: 1,
                           ),
                         ),
-                        child: const Icon(Icons.photo_library, size: 24),
+                        child: const Icon(Icons.photo_library_rounded, size: 24),
                       ),
                       const SizedBox(width: 24),
                       Container(
@@ -227,7 +252,7 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.camera_alt, color: Colors.black, size: 32),
+                        child: const Icon(Icons.camera_alt_rounded, color: Colors.black, size: 32),
                       ),
                       const SizedBox(width: 24),
                       Container(
@@ -247,32 +272,32 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
                   ),
                   const SizedBox(height: 24),
                   // Retake button
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.only(bottom: 24),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: const Color(0xFF1E1E1E),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: BorderSide(
-                            color: Colors.grey.withOpacity(0.2),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: const Text(
-                        'Retake scan',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   width: double.infinity,
+                  //   margin: const EdgeInsets.only(bottom: 24),
+                  //   child: TextButton(
+                  //     style: TextButton.styleFrom(
+                  //       backgroundColor: const Color(0xFF1E1E1E),
+                  //       padding: const EdgeInsets.symmetric(vertical: 16),
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //         side: BorderSide(
+                  //           color: Colors.grey.withOpacity(0.2),
+                  //           width: 1,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     onPressed: () {},
+                  //     child: const Text(
+                  //       'Retake scan',
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.w500,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
