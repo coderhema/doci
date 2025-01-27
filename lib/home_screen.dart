@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:io';
+import 'main.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
 import 'services/storage_service.dart'; 
@@ -95,9 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.red,
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
+                  children: [
                     Icon(Icons.delete, color: Colors.white),
                     SizedBox(width: 10),
                     Text(
@@ -220,89 +221,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: _buildFilesList(),
       bottomNavigationBar: widget.bottomNavigationBar,
-      floatingActionButton: CustomFAB(
-        onFilePicked: (result) {
-          if (result != null) {
-            addFile(FileItem(
-              name: result.files.first.name,
-              path: result.files.first.path!,
-              dateAdded: DateTime.now(),
-            ));
-          }
-        },
-      ),
-    );
-  }
-}
-
-class AnimatedFileFAB extends StatefulWidget {
-  const AnimatedFileFAB({Key? key}) : super(key: key);
-
-  @override
-  State<AnimatedFileFAB> createState() => _AnimatedFileFABState();
-}
-
-class _AnimatedFileFABState extends State<AnimatedFileFAB> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  bool _isExpanded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      // Handle file upload here
-      setState(() => _isExpanded = false);
-      _animationController.reverse();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: _isExpanded ? 160 : 56,
-      height: 56,
-      child: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        onPressed: () {
-          setState(() {
-            _isExpanded = !_isExpanded;
-            if (_isExpanded) {
-              _animationController.forward();
-            } else {
-              _animationController.reverse();
-            }
-          });
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(_isExpanded ? Icons.close : Icons.add),
-            if (_isExpanded) ...[
-              const SizedBox(width: 8),
-              TextButton(
-                onPressed: _pickFile,
-                child: const Text('Add File', 
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ],
-        ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () async {
+            },
+            child: const Icon(Icons.camera_alt), // You can change the icon as needed
+          ),
+          const SizedBox(height: 16), // Space between the buttons
+          CustomFAB(
+            onFilePicked: (result) {
+              if (result != null) {
+                addFile(FileItem(
+                  name: result.files.first.name,
+                  path: result.files.first.path!,
+                  dateAdded: DateTime.now(),
+                ));
+              }
+            },
+          ),
+        ],
       ),
     );
   }

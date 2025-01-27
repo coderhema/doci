@@ -7,13 +7,13 @@ plugins {
 
 android {
     namespace 'com.doci.ai.doci'
-    // namespace = "com.doci.ai.doci" // This line will be removed
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        options.compilerArgs << "-Xlint:-options"
     }
 
     kotlinOptions {
