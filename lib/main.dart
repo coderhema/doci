@@ -34,18 +34,16 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
   void _onNavItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      
     });
   }
 
   Widget _buildBottomNav() {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF121212),
+        color: Theme.of(context).colorScheme.surface,
         border: Border(
           top: BorderSide(
-            // ignore: deprecated_member_use
-            color: Colors.grey.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
             width: 1,
           ),
         ),
@@ -55,15 +53,15 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildNavItem(
-            _selectedIndex == 0 ? Icons.description_rounded : Icons.description_outlined, 
-            'Documents', 
-            _selectedIndex == 0, 
+            _selectedIndex == 0 ? Icons.description_rounded : Icons.description_outlined,
+            'Documents',
+            _selectedIndex == 0,
             () => _onNavItemTapped(0)
           ),
           _buildNavItem(
-            _selectedIndex == 1 ? Icons.person : Icons.person_outline, 
-            'Account', 
-            _selectedIndex == 1, 
+            _selectedIndex == 1 ? Icons.person : Icons.person_outline,
+            'Account',
+            _selectedIndex == 1,
             () => _onNavItemTapped(1)
           ),
         ],
@@ -82,12 +80,16 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
             curve: Curves.easeInOut,
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 4),
             decoration: BoxDecoration(
-              color: isSelected ? Colors.white.withOpacity(0.2) : Colors.transparent,
+              color: isSelected 
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.2) 
+                : Colors.transparent,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Icon(
               icon,
-              color: isSelected ? Colors.white : Colors.grey,
+              color: isSelected 
+                ? Theme.of(context).colorScheme.primary 
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               size: 24,
             ),
           ),
@@ -95,7 +97,9 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey,
+              color: isSelected 
+                ? Theme.of(context).colorScheme.primary 
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               fontSize: 12,
             ),
           ),
@@ -116,7 +120,7 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: body,
       bottomNavigationBar: _selectedIndex != 0 ? _buildBottomNav() : null,
     );

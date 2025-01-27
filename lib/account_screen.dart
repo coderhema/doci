@@ -50,7 +50,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
@@ -147,7 +147,7 @@ class AccountScreen extends StatelessWidget {
                 icon: Icons.arrow_outward,
                 title: 'Upgrade to Pro',
                 // ignore: deprecated_member_use
-                iconBackgroundColor: accentColor.withOpacity(0.2),
+                iconBackgroundColor: Theme.of(context).colorScheme.background,
               ),
               const SizedBox(height: 32),
               // Account Settings Section
@@ -163,10 +163,12 @@ class AccountScreen extends StatelessWidget {
               _buildSettingsItem(
                 icon: Icons.help_outline,
                 title: 'Help & Support',
+                iconBackgroundColor: Theme.of(context).colorScheme.background,
               ),
               _buildSettingsItem(
                 icon: Icons.logout,
                 title: 'Log out',
+                iconBackgroundColor: Theme.of(context).colorScheme.background,
               ),
             ],
           ),

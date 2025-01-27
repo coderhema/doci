@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return Container(
           margin: const EdgeInsets.only(bottom: 16),
           child: Material(
-            color: const Color(0xFF1A1A1A),
+            color: const Color.fromARGB(255, 4, 4, 4),
             borderRadius: BorderRadius.circular(12),
             child: Dismissible(
               key: Key(file.path), // Unique key for each file
@@ -123,14 +123,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Icon(Icons.description, color: Colors.blue),
-                      ),
+                     Container(
+  padding: const EdgeInsets.all(8),
+  decoration: BoxDecoration(
+    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+    borderRadius: BorderRadius.circular(8),
+  ),
+  child: Icon(
+    Icons.description, 
+    color: Theme.of(context).colorScheme.primary, // Change this line
+  ),
+),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
