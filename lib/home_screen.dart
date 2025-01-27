@@ -221,27 +221,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: _buildFilesList(),
       bottomNavigationBar: widget.bottomNavigationBar,
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () async {
-            },
-            child: const Icon(Icons.camera_alt), // You can change the icon as needed
-          ),
-          const SizedBox(height: 16), // Space between the buttons
-          CustomFAB(
-            onFilePicked: (result) {
-              if (result != null) {
-                addFile(FileItem(
-                  name: result.files.first.name,
-                  path: result.files.first.path!,
-                  dateAdded: DateTime.now(),
-                ));
-              }
-            },
-          ),
-        ],
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,  // This ensures children align to the right
+          children: [
+        FloatingActionButton(
+          onPressed: () async {
+          },
+          child: const Icon(Icons.camera_alt),
+        ),
+        const SizedBox(height: 16),
+        CustomFAB(
+          onFilePicked: (result) {
+            if (result != null) {
+          addFile(FileItem(
+            name: result.files.first.name,
+            path: result.files.first.path!,
+            dateAdded: DateTime.now(),
+          ));
+            }
+          },
+        ),
+          ],
+        ),
       ),
     );
   }
