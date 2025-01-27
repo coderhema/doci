@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:io';
+import 'scan_screen.dart';
 import 'main.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
@@ -273,11 +274,15 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             FloatingActionButton(
-              onPressed: () async {
-              },
-              tooltip: 'Scan Document',
-              child: const Icon(Icons.document_scanner_rounded),
-            ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ScanScreen()),
+          );
+        },
+        tooltip: 'Scan Document',
+        child: const Icon(Icons.document_scanner_rounded),
+      ),
             const SizedBox(height: 16),
             CustomFAB(
               onFilePicked: (result) {
