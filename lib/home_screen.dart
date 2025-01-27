@@ -58,14 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(
               Icons.description_outlined,
               size: 64,
-              color: Colors.grey.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
             ),
             const SizedBox(height: 16),
             Text(
               'No documents here',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
                 fontWeight: FontWeight.w500,
               ),
             ),
