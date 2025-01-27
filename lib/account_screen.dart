@@ -40,7 +40,7 @@ class AccountScreen extends StatelessWidget {
         ),
         trailing: const Icon(
           Icons.chevron_right,
-          color: Colors.white,
+          color: Colors.grey,
           size: 24,
         ),
       ),
@@ -64,7 +64,9 @@ class AccountScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.close, size: 24),
-          onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/');
+            },
         ),
       ),
       body: SingleChildScrollView(
