@@ -131,7 +131,7 @@ class AccountScreen extends StatelessWidget {
                         child: const Text(
                           'Edit Profile',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.grey,
                             fontSize: 17,
                             fontWeight: FontWeight.w500,
                           ),
@@ -154,7 +154,7 @@ class AccountScreen extends StatelessWidget {
               const Text(
                 'Account Settings',
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 18,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.1,
                 ),
