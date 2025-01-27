@@ -213,9 +213,50 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('DOCI'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search, size: 28),
-            onPressed: () {},
+          PopupMenuButton(
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 1,
+                child: Text('Paste Document URL'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 1) {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    final urlController = TextEditingController();
+                    return AlertDialog(
+                      title: const Text('Paste Document URL'),
+                      content: TextField(
+                        controller: urlController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter document URL',
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            final url = urlController.text.trim();
+                            if (url.isNotEmpty) {
+                              // Handle the URL here
+                              debugPrint('Document URL: $url');
+                            }
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Add'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
           ),
         ],
       ),
@@ -225,25 +266,25 @@ class _HomeScreenState extends State<HomeScreen> {
         alignment: Alignment.bottomRight,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,  // This ensures children align to the right
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-        FloatingActionButton(
-          onPressed: () async {
-          },
-          child: const Icon(Icons.camera_alt),
-        ),
-        const SizedBox(height: 16),
-        CustomFAB(
-          onFilePicked: (result) {
-            if (result != null) {
-          addFile(FileItem(
-            name: result.files.first.name,
-            path: result.files.first.path!,
-            dateAdded: DateTime.now(),
-          ));
-            }
-          },
-        ),
+            FloatingActionButton(
+              onPressed: () async {
+              },
+              child: const Icon(Icons.camera_alt),
+            ),
+            const SizedBox(height: 16),
+            CustomFAB(
+              onFilePicked: (result) {
+                if (result != null) {
+                  addFile(FileItem(
+                    name: result.files.first.name,
+                    path: result.files.first.path!,
+                    dateAdded: DateTime.now(),
+                  ));
+                }
+              },
+            ),
           ],
         ),
       ),
