@@ -217,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('DOCI'),
         actions: [
           PopupMenuButton(
+            tooltip: 'More Options',
             icon: const Icon(Icons.more_vert),
             itemBuilder: (context) => [
               const PopupMenuItem(
@@ -274,7 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
             FloatingActionButton(
               onPressed: () async {
               },
-              child: const Icon(Icons.camera_alt),
+              tooltip: 'Scan Document',
+              child: const Icon(Icons.document_scanner_rounded),
             ),
             const SizedBox(height: 16),
             CustomFAB(
