@@ -6,7 +6,8 @@ plugins {
 }
 
 android {
-    namespace = "com.doci.ai.doci"
+    namespace 'com.doci.ai.doci'
+    // namespace = "com.doci.ai.doci" // This line will be removed
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

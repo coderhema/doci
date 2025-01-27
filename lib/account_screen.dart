@@ -161,14 +161,6 @@ class AccountScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildSettingsItem(
-                icon: Icons.notifications_outlined,
-                title: 'Notifications',
-              ),
-              _buildSettingsItem(
-                icon: Icons.shield_outlined,
-                title: 'Privacy',
-              ),
-              _buildSettingsItem(
                 icon: Icons.help_outline,
                 title: 'Help & Support',
               ),

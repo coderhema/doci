@@ -1,4 +1,4 @@
-aimport 'package:flutter/material.dart';
+e import 'package:flutter/material.dart';
 import 'services/storage_service.dart';
 import 'account_screen.dart';
 import 'home_screen.dart';
@@ -34,7 +34,6 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
   void _onNavItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      
     });
   }
 
@@ -44,7 +43,6 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
         color: const Color(0xFF121212),
         border: Border(
           top: BorderSide(
-            // ignore: deprecated_member_use
             color: Colors.grey.withOpacity(0.1),
             width: 1,
           ),
@@ -117,6 +115,14 @@ class _DocumentScannerPageState extends State<DocumentScannerPage> {
 
     return Scaffold(
       backgroundColor: Colors.black,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Call the function to get image from camera
+          getImageFromCamera();
+        },
+        tooltip: 'Scan',
+        child: Icon(Icons.camera),
+      ),
       body: body,
       bottomNavigationBar: _selectedIndex != 0 ? _buildBottomNav() : null,
     );

@@ -63,7 +63,7 @@ class _CustomFABState extends State<CustomFAB> with SingleTickerProviderStateMix
       child: Material(
         color: Theme.of(context).primaryColor,
         elevation: 6,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: _toggleExpanded,
