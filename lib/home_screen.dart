@@ -7,6 +7,7 @@ import 'main.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
 import 'services/storage_service.dart'; 
+import 'package:path/path.dart' as path;
 
 class HomeScreen extends StatefulWidget {
   final Widget bottomNavigationBar;
@@ -59,14 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(
               Icons.description_outlined,
               size: 64,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.surfaceBright.withOpacity(0.4),
             ),
             const SizedBox(height: 16),
             Text(
               'No documents here',
               style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                color: Theme.of(context).colorScheme.surfaceBright.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -109,32 +110,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              onDismissed: (direction) {
-                _deleteFile(file);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${file.name} deleted')),
-                );
-              },
+              onDismissed: (_) => _deleteFile(file),
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  _openPdfViewer(file.path);
-                },
+                onTap: () => _openFile(file),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                     Container(
-  padding: const EdgeInsets.all(8),
-  decoration: BoxDecoration(
-    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-    borderRadius: BorderRadius.circular(8),
-  ),
-  child: Icon(
-    Icons.description, 
-    color: Theme.of(context).colorScheme.primary, // Change this line
-  ),
-),
+                      _buildFileIcon(file.path),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -204,11 +188,102 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _deleteFile(FileItem file) {
-    setState(() {
-      _files.remove(file);
-    });
-    _storage.saveFiles(_files); // Update storage after deletion
+  void _openFile(FileItem file) {
+    final extension = path.extension(file.path).toLowerCase();
+    if (extension == '.pdf') {
+      _openPdfViewer(file.path);
+    } else if (['.jpg', '.jpeg', '.png'].contains(extension)) {
+      _openImageViewer(file.path);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unsupported file type')),
+      );
+    }
+  }
+
+  void _openImageViewer(String imagePath) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text(path.basename(imagePath)),
+          ),
+          body: Center(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.file(File(imagePath)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFileIcon(String filePath) {
+    final extension = path.extension(filePath).toLowerCase();
+    IconData iconData;
+    Color iconColor = Theme.of(context).colorScheme.primary;
+
+    switch (extension) {
+      case '.pdf':
+        iconData = Icons.picture_as_pdf;
+        break;
+      case '.jpg':
+      case '.jpeg':
+      case '.png':
+        iconData = Icons.image;
+        break;
+      default:
+        iconData = Icons.description;
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: iconColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(iconData, color: iconColor),
+    );
+  }
+
+  Future<void> _deleteFile(FileItem file) async {
+    final bool confirmDelete = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete File'),
+        content: Text('Are you sure you want to delete ${file.name}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    ) ?? false;
+
+    if (confirmDelete && mounted) {
+      try {
+        final fileToDelete = File(file.path);
+        if (await fileToDelete.exists()) {
+          await fileToDelete.delete();
+        }
+        setState(() => _files.remove(file));
+        await _storage.saveFiles(_files);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error deleting file: $e')),
+          );
+        }
+      }
+    }
   }
 
   @override
@@ -274,15 +349,26 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ScanScreen()),
-          );
-        },
-        tooltip: 'Scan Document',
-        child: const Icon(Icons.document_scanner_rounded),
-      ),
+              onPressed: () async {
+                try {
+                  final FileItem? scannedFile = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ScanScreen(autoStart: true)),
+                  );
+                  if (scannedFile != null && mounted) {
+                    addFile(scannedFile);
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: $e')),
+                    );
+                  }
+                }
+              },
+              tooltip: 'Scan Document',
+              child: const Icon(Icons.document_scanner_rounded),
+            ),
             const SizedBox(height: 16),
             CustomFAB(
               onFilePicked: (result) {
