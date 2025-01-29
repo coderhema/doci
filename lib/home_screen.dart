@@ -253,6 +253,34 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Image.file(File(imagePath)),
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            try {
+              String text = await FlutterTesseractOcr.extractText(imagePath);
+              if (mounted) {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Container(
+                    padding: const EdgeInsets.all(16),
+                    child: SingleChildScrollView(
+                      child: Text(text.isEmpty ? 'No text found' : text),
+                    ),
+                  ),
+                );
+              }
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to extract text: $e')),
+              );
+            }
+          },
+          child: SvgPicture.asset(
+                'assets/icons/book_4_spark_24px.svg',
+                width: 24,
+                height: 24,
+                ),
+          tooltip: 'Extract Text from Image',
+        ),
         ),
       ),
     );
