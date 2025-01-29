@@ -39,8 +39,8 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.0
   # flutter_document_scanner: ^1.1.2
+  google_mlkit_text_recognition: ^0.11.0
   google_mlkit_document_scanner: ^0.3.0
-  flutter_tesseract_ocr: ^0.4.28
   flutter_svg: ^2.0.9  # Add this for SVG support
 
 dev_dependencies:
@@ -69,7 +69,6 @@ flutter:
   assets:
     - assets/
     - assets/icons/
-    - assets/tessdata/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -60,39 +60,46 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> startScan() async {
-    if (_isScanning) return;
+  if (_isScanning) return;
 
-    setState(() => _isScanning = true);
+  setState(() => _isScanning = true);
+  
+  try {
+    if (documentScanner == null) {
+      throw Exception('Document scanner not initialized');
+    }
     
-    try {
-      if (documentScanner == null) {
-        throw Exception('Document scanner not initialized');
-      }
-      
-      debugPrint('Starting document scan...');
-      final result = await documentScanner!.scanDocument();
-      debugPrint('Scan result: ${result?.images.length ?? 0} images');
-      
-      if (result != null && result.images.isNotEmpty) {
+    debugPrint('Starting document scan...');
+    final result = await documentScanner!.scanDocument();
+    
+    // Debugging: Check the result
+    debugPrint('Scan result: $result');
+    
+    if (result != null) {
+      debugPrint('Number of images scanned: ${result.images.length}');
+      if (result.images.isNotEmpty) {
         debugPrint('First image path: ${result.images.first}');
         final savedPath = await _saveScannedFile(result.images.first);
         Navigator.pop(context, FileItem(name: path.basename(savedPath), path: savedPath, dateAdded: DateTime.now()));
       } else {
         throw Exception('No images found in the scanning result.');
       }
-    } catch (e, stackTrace) {
-      debugPrint('Scanning error: $e');
-      debugPrint('Stack trace: $stackTrace');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Scanner Error: ${e.toString()}')),
-        );
-        Navigator.pop(context);
-      }
-    } finally {
-      setState(() => _isScanning = false);
+    } else {
+      throw Exception('Scan result is null.');
     }
+  } catch (e, stackTrace) {
+    debugPrint('Scanning error: $e');
+    debugPrint('Stack trace: $stackTrace');
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Scanner Error: ${e.toString()}')),
+      );
+      Navigator.pop(context);
+    }
+  } finally {
+    setState(() => _isScanning = false);
   }
+}
 
   Future<String> _saveScannedFile(String originalPath) async {
     final appDir = await getApplicationDocumentsDirectory();

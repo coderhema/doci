@@ -6,11 +6,11 @@ import 'scan_screen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'main.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
 import 'services/storage_service.dart'; 
 import 'package:path/path.dart' as path;
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 class HomeScreen extends StatefulWidget {
   final Widget bottomNavigationBar;
@@ -184,11 +184,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (mounted) {
                     showModalBottomSheet(
                       context: context,
-                      builder: (context) => Container(
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+                      ),
+                      builder: (context) => DraggableScrollableSheet(
+                      initialChildSize: 0.4,
+                      minChildSize: 0.2,
+                      maxChildSize: 0.8,
+                      expand: false,
+                      builder: (context, scrollController) => Container(
                         padding: const EdgeInsets.all(16),
-                        child: SingleChildScrollView(
-                          child: Text(text),
+                        child: Column(
+                        children: [
+                          Container(
+                          width: 40,
+                          height: 4,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                          ),
+                          Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            child: Text(
+                            text.isEmpty 
+                              ? 'No text found in PDF' 
+                              : text,
+                            style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          ),
+                        ],
                         ),
+                      ),
                       ),
                     );
                   }
@@ -254,33 +285,73 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            try {
-              String text = await FlutterTesseractOcr.extractText(imagePath);
-              if (mounted) {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Container(
-                    padding: const EdgeInsets.all(16),
-                    child: SingleChildScrollView(
-                      child: Text(text.isEmpty ? 'No text found' : text),
+            onPressed: () async {
+              try {
+                // Initialize text recognizer
+                final textRecognizer = TextRecognizer();
+                final inputImage = InputImage.fromFilePath(imagePath);
+                
+                // Process the image
+                final recognizedText = await textRecognizer.processImage(inputImage);
+                await textRecognizer.close();
+
+                if (mounted) {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true, // Makes the sheet larger
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(20))
                     ),
-                  ),
-                );
+                    builder: (context) => DraggableScrollableSheet(
+                      initialChildSize: 0.4,
+                      minChildSize: 0.2,
+                      maxChildSize: 0.8,
+                      expand: false,
+                      builder: (context, scrollController) => Container(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                child: Text(
+                                  recognizedText.text.isEmpty 
+                                    ? 'No text found in image' 
+                                    : recognizedText.text,
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to extract text: $e')),
+                  );
+                }
               }
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to extract text: $e')),
-              );
-            }
-          },
-          child: SvgPicture.asset(
-                'assets/icons/book_4_spark_24px.svg',
-                width: 24,
-                height: 24,
-                ),
-          tooltip: 'Extract Text from Image',
-        ),
+            },
+            child: SvgPicture.asset(
+              'assets/icons/book_4_spark_24px.svg',
+              width: 24,
+              height: 24,
+            ),
+            tooltip: 'Extract Text from Image',
+          ),
         ),
       ),
     );
