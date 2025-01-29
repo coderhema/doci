@@ -38,7 +38,7 @@ dependencies:
   permission_handler: ^10.0.0
   path_provider: ^2.1.5
   path: ^1.9.0
-  flutter_document_scanner: ^1.1.2
+  # flutter_document_scanner: ^1.1.2
   google_mlkit_document_scanner: ^0.3.0
   flutter_tesseract_ocr: ^0.4.28
   flutter_svg: ^2.0.9  # Add this for SVG support
