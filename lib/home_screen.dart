@@ -3,7 +3,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'dart:io';
 import 'scan_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'main.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
+import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
 import 'services/storage_service.dart'; 
@@ -162,8 +165,42 @@ class _HomeScreenState extends State<HomeScreen> {
         MaterialPageRoute(
           builder: (context) => Scaffold(
             appBar: AppBar(
-                title: Text(File(filePath).uri.pathSegments.last),
+          title: Text(File(filePath).uri.pathSegments.last),
+          actions: [
+            IconButton(
+                icon: SvgPicture.asset(
+                'assets/icons/book_4_spark_24px.svg',
+                width: 24,
+                height: 24,
+                ),
+              onPressed: () async {
+                try {
+                  // Load the PDF document
+                  final PdfDocument document = PdfDocument(inputBytes: File(filePath).readAsBytesSync());
+                  // Extract text
+                  String text = PdfTextExtractor(document).extractText();
+                  document.dispose();
+                  
+                  if (mounted) {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (context) => Container(
+                        padding: const EdgeInsets.all(16),
+                        child: SingleChildScrollView(
+                          child: Text(text),
+                        ),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to extract text: $e')),
+                  );
+                }
+              },
             ),
+          ],
+        ),
             body: SfPdfViewer.file(
               File(filePath),
               key: _pdfViewerKey,
@@ -367,7 +404,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
               tooltip: 'Scan Document',
-              child: const Icon(Icons.document_scanner_rounded),
+              child: SvgPicture.asset(
+              'assets/icons/scan_24px.svg',
+              width: 24,
+              height: 24,
+            ),
             ),
             const SizedBox(height: 16),
             CustomFAB(
