@@ -8,7 +8,8 @@ import 'main.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'widgets/animated_fab.dart';
 import 'models/file_item.dart';
-import 'services/storage_service.dart'; 
+import 'services/storage_service.dart';
+import 'services/mistral_service.dart'; // Import MistralService
 import 'package:path/path.dart' as path;
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
